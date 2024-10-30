@@ -17,7 +17,7 @@ const Header = () => {
   return (
     <header
       className={`fixed top-0 w-full h-16 z-50 transition-all duration-300 ${
-        scrolled ? 'bg-white bg-opacity-90 shadow-md' : 'bg-transparent'
+        scrolled ? 'bg-white shadow-md' : 'bg-transparent'
       }`}
     >
       <div className="container mx-auto px-4 py-4">
