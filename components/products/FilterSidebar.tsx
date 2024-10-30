@@ -3,84 +3,101 @@ import { Slider } from '@/components/ui/slider';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import useFilterStore from '@/store/filterStore';
+import { products } from '@/data/products';
 
 const FilterSidebar = () => {
   const { filters, setFilter } = useFilterStore();
 
-  const categories = [
+  // Extract unique product types, sizes, and colors from products
+  const productTypes = [...new Set(products.map(product => product.type.toLowerCase()))];
+  const allSizes = [...new Set(products.flatMap(product => product.sizes.map(size => size.toLowerCase())))];
+  const allColors = [...new Set(products.flatMap(product => product.colors.map(color => color.toLowerCase())))];
+
+  const filterOptions = [
     {
       id: 'productType',
       title: 'Product Type',
-      options: ['T-Shirt', 'Jeans', 'Shorts', 'Jacket', 'Dress', 'Hoodie', 'Blazer', 'Leggings', 'Pajamas', 'Hat'],
+      options: productTypes
     },
     {
       id: 'size',
       title: 'Size',
-      options: ['XS', 'S', 'M', 'L', 'XL', 'XXL', '24', '26', '28', '30', '32', '34', '36'],
+      options: allSizes
     },
     {
       id: 'color',
       title: 'Color',
-      options: ['White', 'Black', 'Navy', 'Blue', 'Red', 'Khaki', 'Olive', 'Brown', 'Gray', 'Green', 'Purple', 'Emerald', 'Indigo', 'Pink', 'Yellow'],
-    },
+      options: allColors
+    }
   ];
+
+  // Find min and max prices
+  const prices = products.map(product => product.price);
+  const minPrice = Math.floor(Math.min(...prices));
+  const maxPrice = Math.ceil(Math.max(...prices));
 
   const handleCheckboxChange = (categoryId, option) => {
     const currentFilters = filters[categoryId] || [];
-    const newFilters = currentFilters.map((item) => item.toLowerCase()).includes(option.toLowerCase())
-      ? currentFilters.filter((item) => item.toLowerCase() !== option.toLowerCase())
+    const newFilters = currentFilters.includes(option)
+      ? currentFilters.filter(item => item !== option)
       : [...currentFilters, option];
     setFilter(categoryId, newFilters);
   };
 
+  // Capitalize first letter for display
+  const capitalizeFirst = (str) => str.charAt(0).toUpperCase() + str.slice(1);
+
   return (
-    <aside className="w-full md:w-72 h-screen bg-white border-r border-gray-200 p-4 overflow-y-auto">
-      <h2 className="text-xl font-semibold mb-6">Filters</h2>
+    <div className="w-64 p-4 border-r">
+      <h2 className="text-xl font-semibold mb-4">Filters</h2>
 
       {/* Price Range Slider */}
       <div className="mb-6">
-        <h3 className="text-sm font-medium mb-4">Price Range</h3>
+        <h3 className="font-medium mb-2">Price Range</h3>
         <Slider
-          min={0}
-          max={1000}
-          step={10}
-          value={filters.priceRange}
+          defaultValue={[minPrice, maxPrice]}
+          min={minPrice}
+          max={maxPrice}
+          step={1}
           onValueChange={(value) => setFilter('priceRange', value)}
           className="w-full"
         />
-        <div className="flex justify-between mt-2 text-sm text-gray-600">
-          <span>${filters.priceRange[0]}</span>
-          <span>${filters.priceRange[1]}</span>
+        <div className="flex justify-between mt-2 text-sm">
+          <span>${filters.priceRange?.[0] || minPrice}</span>
+          <span>${filters.priceRange?.[1] || maxPrice}</span>
         </div>
       </div>
 
-      {/* Filter Categories Accordion */}
-      <Accordion type="multiple" className="w-full">
-        {categories.map((category) => (
-          <AccordionItem value={category.id} key={category.id}>
+      {/* Filter Options Accordion */}
+      <Accordion type="single" collapsible className="w-full">
+        {filterOptions.map(optionGroup => (
+          <AccordionItem key={optionGroup.id} value={optionGroup.id}>
             <AccordionTrigger className="text-sm font-medium">
-              {category.title}
+              {optionGroup.title}
             </AccordionTrigger>
             <AccordionContent>
               <div className="space-y-2">
-                {category.options.map((option) => (
-                  <label
-                    key={option}
-                    className="flex items-center space-x-2 cursor-pointer"
-                  >
+                {optionGroup.options.map(option => (
+                  <div key={option} className="flex items-center space-x-2">
                     <Checkbox
-                      checked={filters[category.id]?.includes(option)}
-                      onCheckedChange={() => handleCheckboxChange(category.id, option)}
+                      id={`${optionGroup.id}-${option}`}
+                      checked={(filters[optionGroup.id] || []).includes(option)}
+                      onCheckedChange={() => handleCheckboxChange(optionGroup.id, option)}
                     />
-                    <span className="text-sm">{option}</span>
-                  </label>
+                    <label
+                      htmlFor={`${optionGroup.id}-${option}`}
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    >
+                      {capitalizeFirst(option)}
+                    </label>
+                  </div>
                 ))}
               </div>
             </AccordionContent>
           </AccordionItem>
         ))}
       </Accordion>
-    </aside>
+    </div>
   );
 };
 

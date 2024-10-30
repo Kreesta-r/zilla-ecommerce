@@ -9,13 +9,16 @@ import RouteHeader from '@/components/products/RouteHeader';
 import FilterSidebar from '@/components/products/FilterSidebar';
 import useFilterStore from '@/store/filterStore';
 
-const categories = ['All', 'Men', 'Women', 'Accessories'];
+const categories = ['All', 'Men', 'Women','Unisex', 'Accessories'];
 
 const ProductsPage = () => {
   const router = useRouter();
   const { category } = router.query;
   const [selectedCategory, setSelectedCategory] = useState('All');
   const { filters, setFilter, clearFilters } = useFilterStore();
+  
+  // Alert state
+  const [alert, setAlert] = useState('');
 
   useEffect(() => {
     if (category && typeof category === 'string') {
@@ -65,9 +68,25 @@ const ProductsPage = () => {
     router.push('/products');
   };
 
+  // Function to handle adding items to cart
+  const handleAddToCart = (product) => {
+    // Add your cart logic here (e.g., update cart state)
+    
+    // Set alert message
+    setAlert(`${product.name} has been added to your cart!`);
+    
+    // Clear alert after 3 seconds
+    setTimeout(() => setAlert(''), 3000);
+  };
+
   return (
     <>
       <RouteHeader />
+      {alert && (
+        <div className="fixed top-0 right-0 m-4 p-4 bg-green-500 text-white rounded shadow">
+          {alert}
+        </div>
+      )}
       <div className="flex flex-col md:flex-row max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <FilterSidebar />
 
@@ -95,7 +114,7 @@ const ProductsPage = () => {
                   className={`
                     relative px-4 py-4 text-sm font-medium -mb-px
                     ${selectedCategory === cat 
-                      ? 'text-blue-600 border-b-2 border-blue-600' 
+                      ? 'text-black border-b-2 border-black' 
                       : 'text-gray-500 hover:text-gray-700 hover:border-gray-300 border-b-2 border-transparent'}
                     transition-colors duration-200
                   `}
@@ -191,7 +210,7 @@ const ProductsPage = () => {
               </p>
             </div>
           ) : (
-            <ProductGrid products={filteredProducts} />
+            <ProductGrid products={filteredProducts} onAddToCart={handleAddToCart} />
           )}
         </div>
       </div>
