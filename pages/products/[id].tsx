@@ -126,7 +126,7 @@ const ProductPage = () => {
             <div className="flex items-center gap-1 text-xs text-gray-500">
               <span>Home</span>
               <ChevronRight className="w-4 h-4" />
-              <span>{product.category}</span>
+              <span className='capitalize'>{product.category}</span>
               <ChevronRight className="w-4 h-4" />
               <span className="text-black">{product.name}</span>
             </div>

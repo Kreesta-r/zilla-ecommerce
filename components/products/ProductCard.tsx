@@ -1,23 +1,33 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { Heart, ShoppingCart } from 'lucide-react';
 import useCartStore from '@/store/cartStore';
+import ToastAlert from './Toast';
 
 const ProductCard = ({ product }) => {
+  const [alertType, setAlertType] = useState('success');
+  const [showAlert, setShowAlert] = useState(false);
   const addItem = useCartStore((state) => state.addItem);
 
   const handleAddToCart = (e) => {
     e.preventDefault();
     addItem(product);
-    alert(`${product.name} has been added to your cart!`); // Alert to inform the user
+    setShowAlert(true);
+    setAlertType('success');
   };
 
+  const handleAddToWishlist = (e) => {
+    e.preventDefault();
+    setShowAlert(true);
+    setAlertType('warning');
+  };
+ 
   return (
     <div className="group relative bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
       {/* Product Image and Quick Actions */}
       <div className="relative aspect-square">
         <img
-          src={product.images[0] || '/path/to/fallback-image.jpg'} // Add a fallback image path if no image is available
+          src={product.images[0] || '/path/to/fallback-image.jpg'}
           alt={product.name}
           className="w-full h-full object-cover"
         />
@@ -25,7 +35,7 @@ const ProductCard = ({ product }) => {
         {/* Quick Action Buttons - Appear on Hover */}
         <div className="absolute inset-0 bg-black bg-opacity-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-4">
           <button
-            onClick={handleAddToCart} // Use the handleAddToCart function
+            onClick={handleAddToCart}
             className="p-2 bg-white rounded-full hover:bg-gray-100 transition-colors"
             aria-label="Add to cart"
           >
@@ -33,11 +43,7 @@ const ProductCard = ({ product }) => {
           </button>
 
           <button
-            onClick={(e) => {
-              e.preventDefault();
-              // Placeholder for wishlist functionality
-              console.log(`${product.name} added to wishlist!`); 
-            }}
+            onClick={handleAddToWishlist}
             className="p-2 bg-white rounded-full hover:bg-gray-100 transition-colors text-gray-700"
             aria-label="Add to wishlist"
           >
@@ -80,6 +86,15 @@ const ProductCard = ({ product }) => {
           ))}
         </div>
       </Link>
+
+      {/* Alert Dialog */}
+      {showAlert && (
+       <ToastAlert
+         product={product}
+         onClose={() => setShowAlert(false)}
+         type={alertType}
+       />
+     )}
     </div>
   );
 };
