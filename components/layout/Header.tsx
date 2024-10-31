@@ -4,41 +4,63 @@ import Link from 'next/link';
 import useCartStore from '@/store/cartStore';
 import { products } from '@/data/products';
 
-const Header = () => {
+interface User {
+  id?: number; 
+}
+
+
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+  description?: string;
+  category?: string; 
+  type?: string;
+ 
+}
+interface CartStore {  
+  items: Product[]; 
+}
+
+const Header: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
-  const { items } = useCartStore();
+  const [searchResults, setSearchResults]   
+ = useState<Product[]>([]);
+ const { items } = useCartStore() as CartStore;
 
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
     };
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll',   
+ handleScroll);
   }, []);
 
   // Handle search functionality
-  const handleSearch = (query) => {
+  const handleSearch = (query: string) => {
     setSearchQuery(query);
     if (query.trim() === '') {
       setSearchResults([]);
       return;
     }
 
-    const filtered = products.filter((product) => {
+    const filtered = products.filter((product: Product) => {
       const searchTerm = query.toLowerCase();
       return (
         product.name.toLowerCase().includes(searchTerm) ||
-        product.description.toLowerCase().includes(searchTerm) ||
-        product.category.toLowerCase().includes(searchTerm) ||
-        product.type.toLowerCase().includes(searchTerm)
+        (product.description && product.description.toLowerCase().includes(searchTerm)) ||
+        (product.category   
+ && product.category.toLowerCase().includes(searchTerm)) ||
+        (product.type && product.type.toLowerCase().includes(searchTerm))
       );
     });
 
     setSearchResults(filtered);
   };
+
 
   return (
     <header

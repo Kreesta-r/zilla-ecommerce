@@ -10,8 +10,30 @@ import {
 import useFilterStore from '@/store/filterStore';
 import { products } from '@/data/products';
 
-const FilterSidebar = () => {
-  const { filters, setFilter } = useFilterStore();
+interface Filter {  
+  productType: string[];  
+  size: string[];  
+  color: string[];  
+  priceRange: [number, number];  
+}  
+
+interface FilterOption {  
+  id: string;  
+  title: string;  
+  options: string[];  
+}  
+  
+interface Product {  
+  id: number;  
+  name: string;  
+  price: number;  
+  type: string;  
+  sizes: string[];  
+  colors: string[];  
+} 
+
+const FilterSidebar: React.FC = () => {  
+  const { filters, setFilter } = useFilterStore() as { filters: Filter; setFilter: (key: string, value:number[]) => void };  
   const getUniqueValues = (key) => {
     const valueMap = new Map();
     products.forEach((product) => {

@@ -1,11 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Clock, Tag } from 'lucide-react';
 
-const SaleCountdown = () => {
-  const [timeLeft, setTimeLeft] = useState({
+// Define the interface for TimeUnit props
+interface TimeUnitProps {
+  value: number; // The value should be a number
+  label: string; // The label should be a string
+}
+
+const SaleCountdown: React.FC = () => {
+  const [timeLeft, setTimeLeft] = useState<{ hours: number; minutes: number; seconds: number }>({
     hours: 0,
     minutes: 0,
-    seconds: 0
+    seconds: 0,
   });
 
   useEffect(() => {
@@ -14,7 +20,7 @@ const SaleCountdown = () => {
       const midnight = new Date();
       midnight.setHours(24, 0, 0, 0);
       
-      let difference = midnight.getTime() - now.getTime();
+      const difference = midnight.getTime() - now.getTime();
       
       const hours = Math.floor((difference / (1000 * 60 * 60)));
       const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
@@ -29,7 +35,7 @@ const SaleCountdown = () => {
     return () => clearInterval(timer);
   }, []);
 
-  const TimeUnit = ({ value, label }) => (
+  const TimeUnit: React.FC<TimeUnitProps> = ({ value, label }) => (
     <div className="flex flex-col items-center mx-2">
       <div className="bg-white text-black w-16 h-16 rounded-lg flex items-center justify-center text-2xl font-bold shadow-lg">
         {value.toString().padStart(2, '0')}

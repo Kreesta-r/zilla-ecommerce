@@ -2,15 +2,25 @@ import { useEffect, useState } from 'react';
 import { products } from '@/data/products';
 import ProductCard from '../products/ProductCard';
 
-const shuffleArray = (array) => {
+// Define the type for the product
+interface Product {
+  id: number; // Assuming id is a number; change to string if necessary
+  // Add other product properties here as needed, e.g.:
+  name?: string;
+  price?: number;
+  image?: string;
+}
+
+// Specify the type for the shuffleArray function
+const shuffleArray = (array: Product[]): Product[] => {
   return array
     .map((item) => ({ item, sort: Math.random() }))
     .sort((a, b) => a.sort - b.sort)
     .map(({ item }) => item);
 };
 
-const FeaturedProducts = () => {
-  const [shuffledProducts, setShuffledProducts] = useState([]);
+const FeaturedProducts: React.FC = () => {
+  const [shuffledProducts, setShuffledProducts] = useState<Product[]>([]); // State holds an array of Product objects
 
   useEffect(() => {
     // Shuffle products only on the client

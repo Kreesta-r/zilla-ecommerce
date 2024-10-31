@@ -26,7 +26,6 @@ const ProductPage = () => {
 
   const [selectedSize, setSelectedSize] = useState('');
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [showSizeGuide, setShowSizeGuide] = useState(false);
   const [addedToCart, setAddedToCart] = useState(false);
   const [alertType, setAlertType] = useState('success');
   const [showAlert, setShowAlert] = useState(false);
