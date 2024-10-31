@@ -42,7 +42,7 @@ const Hero = () => {
  }, []);
 
  return (
-   <div className="relative h-[90vh] max-h-[100vh] w-full">
+   <div className="relative h-[90vh] max-h-[100vh] w-full" style={{overflow: "hidden"}}>
      {/* Navigation Buttons */}
      <button 
        onClick={prevSlide}
