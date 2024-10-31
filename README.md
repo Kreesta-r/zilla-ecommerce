@@ -1,6 +1,6 @@
 # Zella
 
-Zella is an e-commerce web application built with [Next.js](https://nextjs.org/) and styled using [Tailwind CSS](https://tailwindcss.com/). It uses [Zustand](https://github.com/pmndrs/zustand) for state management, providing a seamless shopping experience with features like browsing products, managing a shopping cart, and checking out.
+Zella is an e-commerce web application built with [Next.js](https://nextjs.org/) and styled using [Tailwind CSS](https://tailwindcss.com/). It uses [Zustand](https://github.com/pmndrs/zustand) for state management, providing a seamless shopping experience with features like browsing products, managing a shopping cart, and checking out.If you like it please give it a star :)
 
 ## Table of Contents
 - [Demo](#demo)
