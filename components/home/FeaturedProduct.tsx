@@ -1,12 +1,22 @@
+import { useEffect, useState } from 'react';
 import { products } from '@/data/products';
 import ProductCard from '../products/ProductCard';
 
-const FeaturedProducts = () => {
-  const shuffledProducts = products
-    .map((product) => ({ product, sort: Math.random() }))
+const shuffleArray = (array) => {
+  return array
+    .map((item) => ({ item, sort: Math.random() }))
     .sort((a, b) => a.sort - b.sort)
-    .map(({ product }) => product)
-    .slice(0, 8);
+    .map(({ item }) => item);
+};
+
+const FeaturedProducts = () => {
+  const [shuffledProducts, setShuffledProducts] = useState([]);
+
+  useEffect(() => {
+    // Shuffle products only on the client
+    const shuffled = shuffleArray(products);
+    setShuffledProducts(shuffled.slice(0, 8));
+  }, []);
 
   return (
     <section className="container mx-auto px-4 py-16">

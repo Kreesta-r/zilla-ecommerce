@@ -29,14 +29,6 @@ const CheckoutPage = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      // Here you would typically:
-      // 1. Validate the form
-      // 2. Process the payment
-      // 3. Create the order
-      // 4. Clear the cart
-      // 5. Redirect to success page
-      
-      // For now, we'll just simulate success:
       await new Promise(resolve => setTimeout(resolve, 1000));
       clearCart();
       router.push('/checkout/success');
@@ -57,7 +49,7 @@ const CheckoutPage = () => {
 
   if (items.length === 0) {
     return (
-      <Layout>
+    
         <div className="container mx-auto px-4 py-16 text-center">
           <h1 className="text-2xl font-bold mb-4">Your cart is empty</h1>
           <button
@@ -67,12 +59,10 @@ const CheckoutPage = () => {
             Continue Shopping
           </button>
         </div>
-      </Layout>
     );
   }
 
   return (
-    <Layout>
       <div className="bg-gray-50 min-h-screen">
         <div className="container mx-auto px-4 py-12">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
@@ -95,7 +85,7 @@ const CheckoutPage = () => {
                         name="email"
                         value={formData.email}
                         onChange={handleInputChange}
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-black focus:ring-black"
+                        className="mt-1 block w-full p-2 rounded-sm border-gray-300 shadow-sm focus:border-black focus:ring-black"
                         required
                       />
                     </div>
@@ -111,7 +101,7 @@ const CheckoutPage = () => {
                           name="firstName"
                           value={formData.firstName}
                           onChange={handleInputChange}
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-black focus:ring-black"
+                          className="mt-1 block w-full p-2 rounded-sm border-gray-300 shadow-sm focus:border-black focus:ring-black"
                           required
                         />
                       </div>
@@ -126,7 +116,7 @@ const CheckoutPage = () => {
                           name="lastName"
                           value={formData.lastName}
                           onChange={handleInputChange}
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-black focus:ring-black"
+                          className="mt-1 block w-full p-2 rounded-sm border-gray-300 shadow-sm focus:border-black focus:ring-black"
                           required
                         />
                       </div>
@@ -148,7 +138,7 @@ const CheckoutPage = () => {
                         name="address"
                         value={formData.address}
                         onChange={handleInputChange}
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-black focus:ring-black"
+                        className="mt-1 block w-full p-2 rounded-sm border-gray-300 shadow-sm focus:border-black focus:ring-black"
                         required
                       />
                     </div>
@@ -163,7 +153,7 @@ const CheckoutPage = () => {
                         name="apartment"
                         value={formData.apartment}
                         onChange={handleInputChange}
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-black focus:ring-black"
+                        className="mt-1 block w-full p-2 rounded-sm border-gray-300 shadow-sm focus:border-black focus:ring-black"
                       />
                     </div>
                     
@@ -178,7 +168,7 @@ const CheckoutPage = () => {
                           name="city"
                           value={formData.city}
                           onChange={handleInputChange}
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-black focus:ring-black"
+                          className="mt-1 block w-full p-2 rounded-sm border-gray-300 shadow-sm focus:border-black focus:ring-black"
                           required
                         />
                       </div>
@@ -193,7 +183,7 @@ const CheckoutPage = () => {
                           name="state"
                           value={formData.state}
                           onChange={handleInputChange}
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-black focus:ring-black"
+                          className="mt-1 block w-full p-2 rounded-sm border-gray-300 shadow-sm focus:border-black focus:ring-black"
                           required
                         />
                       </div>
@@ -209,7 +199,7 @@ const CheckoutPage = () => {
                           name="country"
                           value={formData.country}
                           onChange={handleInputChange}
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-black focus:ring-black"
+                          className="mt-1 block w-full p-2 rounded-sm border-gray-300 shadow-sm focus:border-black focus:ring-black"
                           required
                         >
                           <option value="">Select Country</option>
@@ -229,7 +219,7 @@ const CheckoutPage = () => {
                           name="postalCode"
                           value={formData.postalCode}
                           onChange={handleInputChange}
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-black focus:ring-black"
+                          className="mt-1 block w-full p-2 rounded-sm border-gray-300 shadow-sm focus:border-black focus:ring-black"
                           required
                         />
                       </div>
@@ -245,7 +235,7 @@ const CheckoutPage = () => {
                         name="phone"
                         value={formData.phone}
                         onChange={handleInputChange}
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-black focus:ring-black"
+                        className="mt-1 block w-full p-2 rounded-sm border-gray-300 shadow-sm focus:border-black focus:ring-black"
                         required
                       />
                     </div>
@@ -338,7 +328,6 @@ const CheckoutPage = () => {
           </div>
         </div>
       </div>
-    </Layout>
   );
 };
 

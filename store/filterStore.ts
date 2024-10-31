@@ -1,4 +1,4 @@
-import {create} from 'zustand';
+import { create } from 'zustand';
 
 const useFilterStore = create((set) => ({
   filters: {
@@ -7,7 +7,7 @@ const useFilterStore = create((set) => ({
     size: [],
     color: [],
   },
-  setFilter: (filterType, value) =>
+  setFilter: (filterType, value) => 
     set((state) => ({
       filters: {
         ...state.filters,

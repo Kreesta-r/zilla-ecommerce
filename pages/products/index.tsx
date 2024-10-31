@@ -8,8 +8,9 @@ import { Button } from '@/components/ui/button';
 import RouteHeader from '@/components/products/RouteHeader';
 import FilterSidebar from '@/components/products/FilterSidebar';
 import useFilterStore from '@/store/filterStore';
+import Footer from '@/components/layout/Footer';
 
-const categories = ['All', 'Men', 'Women','Unisex', 'Accessories'];
+const categories = ['All', 'Men', 'Women', 'Unisex', 'Accessories'];
 
 const ProductsPage = () => {
   const router = useRouter();
@@ -17,7 +18,7 @@ const ProductsPage = () => {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const { filters, setFilter, clearFilters } = useFilterStore();
   
-  // Alert state
+  const [sidebarVisible, setSidebarVisible] = useState(true);
   const [alert, setAlert] = useState('');
 
   useEffect(() => {
@@ -68,14 +69,8 @@ const ProductsPage = () => {
     router.push('/products');
   };
 
-  // Function to handle adding items to cart
   const handleAddToCart = (product) => {
-    // Add your cart logic here (e.g., update cart state)
-    
-    // Set alert message
     setAlert(`${product.name} has been added to your cart!`);
-    
-    // Clear alert after 3 seconds
     setTimeout(() => setAlert(''), 3000);
   };
 
@@ -88,7 +83,7 @@ const ProductsPage = () => {
         </div>
       )}
       <div className="flex flex-col md:flex-row max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <FilterSidebar />
+        {sidebarVisible && <FilterSidebar />}
 
         <div className="w-full md:flex-1 md:pl-6">
           <div className="mb-8">
@@ -100,9 +95,12 @@ const ProductsPage = () => {
                 </p>
               </div>
               <div className="flex items-center gap-4">
-                <button className="flex items-center gap-2 px-4 py-2 text-sm text-gray-600 hover:text-gray-900">
+                <button
+                  className="flex items-center gap-2 px-4 py-2 text-sm text-gray-600 hover:text-gray-900"
+                  onClick={() => setSidebarVisible(!sidebarVisible)}
+                >
                   <Layout className="w-4 h-4" />
-                  <span>View</span>
+                  <span>{sidebarVisible ? 'Hide' : 'View'}</span>
                 </button>
               </div>
             </div>
@@ -111,13 +109,11 @@ const ProductsPage = () => {
               {categories.map(cat => (
                 <button
                   key={cat}
-                  className={`
-                    relative px-4 py-4 text-sm font-medium -mb-px
-                    ${selectedCategory === cat 
+                  className={`relative px-4 py-4 text-sm font-medium -mb-px ${
+                    selectedCategory === cat 
                       ? 'text-black border-b-2 border-black' 
-                      : 'text-gray-500 hover:text-gray-700 hover:border-gray-300 border-b-2 border-transparent'}
-                    transition-colors duration-200
-                  `}
+                      : 'text-gray-500 hover:text-gray-700 hover:border-gray-300 border-b-2 border-transparent'
+                  } transition-colors duration-200`}
                   onClick={() => {
                     setSelectedCategory(cat);
                     router.push(`/products?category=${cat.toLowerCase()}`);
@@ -135,7 +131,6 @@ const ProductsPage = () => {
             </nav>
           </div>
 
-          {/* Active Filters Section */}
           {(selectedCategory !== 'All' || getActiveFiltersCount() > 0) && (
             <div className="mb-6">
               <div className="flex items-center justify-between mb-2">
@@ -214,6 +209,7 @@ const ProductsPage = () => {
           )}
         </div>
       </div>
+      <Footer/>
     </>
   );
 };

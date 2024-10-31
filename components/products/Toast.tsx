@@ -4,7 +4,7 @@ const ToastAlert = ({ product, onClose, type = 'success' }) => {
   useEffect(() => {
     const timer = setTimeout(() => {
       onClose();
-    }, 3000);
+    }, 1200);
 
     return () => clearTimeout(timer);
   }, [onClose]);
@@ -14,7 +14,7 @@ const ToastAlert = ({ product, onClose, type = 'success' }) => {
       className={`fixed bottom-4 left-1/2 transform -translate-x-1/2 px-4 py-2 rounded shadow-md z-50 ${
         type === 'success'
           ? 'bg-green-500 text-white'
-          : type === 'warning'
+          : type === 'warning' || type === 'size-warning'
           ? 'bg-yellow-500 text-white'
           : 'bg-red-500 text-white'
       }`}
@@ -37,9 +37,26 @@ const ToastAlert = ({ product, onClose, type = 'success' }) => {
           </svg>
         )}
         {type === 'warning' && (
-           <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-           <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
-         </svg>
+          <svg
+            className="flex-shrink-0 inline w-4 h-4 me-3"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+          </svg>
+        )}
+        {type === 'size-warning' && (
+          <svg
+            className="flex-shrink-0 inline w-4 h-4 me-3"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+          </svg>
         )}
         {type === 'error' && (
           <svg
@@ -62,6 +79,8 @@ const ToastAlert = ({ product, onClose, type = 'success' }) => {
             ? `Success! ${product.name} has been added to your cart.`
             : type === 'warning'
             ? `${product.name} has been added to your wishlist.`
+            : type === 'size-warning'
+            ? 'Please select a size.'
             : 'Error: Something went wrong.'}
         </p>
       </div>

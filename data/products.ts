@@ -152,5 +152,71 @@ export const products = [
     colors: ["red", "black", "emerald"],
     images: ["https://img.freepik.com/free-photo/blond-brunette-women-red-peach-dresses-hands-hips-o_7502-4893.jpg?t=st=1730280688~exp=1730284288~hmac=0246222c7d60da225a39b2a60e96f7f4051bc1bceed0c72d55f9d5035a968c38&w=360"],
     description: "Stunning evening gown for special occasions."
+  },
+  {
+    id: 15,
+    name: "Wool Scarf",
+    price: 24.99,
+    category: "unisex",
+    type: "accessory",
+    sizes: ["One Size"],
+    colors: ["gray", "red", "blue"],
+    images: ["https://img.freepik.com/free-photo/close-up-kid-with-warm-clothes_23-2148905756.jpg?t=st=1730372441~exp=1730376041~hmac=3c6ec1bdfd67faac8c24b472835a1b1c297de792def4b76c5acc4827a9e8edcb&w=360"],
+    description: "Cozy wool scarf to keep you warm and stylish."
+  },
+  {
+    id: 16,
+    name: "Leather Boots",
+    price: 129.99,
+    category: "women",
+    type: "boots",
+    sizes: ["6", "7", "8", "9", "10"],
+    colors: ["black", "brown"],
+    images: ["https://img.freepik.com/free-photo/male-foot-with-brown-leather-shoes-jeans_1150-6001.jpg?t=st=1730372535~exp=1730376135~hmac=dc06f8eb25811c6faebad4a1478bbda298d9d35f37079d8b186ab122ca475a47&w=360"],
+    description: "Elegant leather boots perfect for the winter season."
+  },
+  {
+    id: 17,
+    name: "Denim Jacket",
+    price: 79.99,
+    category: "men",
+    type: "jacket",
+    sizes: ["S", "M", "L", "XL"],
+    colors: ["blue", "black"],
+    images: ["https://img.freepik.com/free-photo/young-teenage-boy-wearing-denim-outfit_23-2150151090.jpg?t=st=1730372206~exp=1730375806~hmac=4bf73364625fc1bf3548ce4f1197c6e10526e19bc960a39ed0374165619aab5f&w=360"],
+    description: "Versatile denim jacket for a trendy and casual look."
+  },
+  {
+    id: 18,
+    name: "Summer Sandals",
+    price: 29.99,
+    category: "women",
+    type: "sandals",
+    sizes: ["6", "7", "8", "9", "10"],
+    colors: ["tan", "white"],
+    images: ["https://img.freepik.com/free-psd/isolated-nail-care-routine_23-2150755759.jpg?t=st=1730372677~exp=1730376277~hmac=d36d75ccca58b4b122fb5f146b1d227308f204d4fc3c16755a3cb2f91ce4e7b2&w=360"],
+    description: "Comfortable summer sandals for a casual day out."
+  },
+  {
+    id: 19,
+    name: "Winter Beanie",
+    price: 14.99,
+    category: "unisex",
+    type: "accessory",
+    sizes: ["One Size"],
+    colors: ["black", "gray", "red"],
+    images: ["https://img.freepik.com/free-photo/boy-wearing-pink-beanie_53876-97851.jpg?t=st=1730372716~exp=1730376316~hmac=944ae717ce2789d97b85a65bf6af6857dbb13bec23b06c9de691b5c21d977850&w=360"],
+    description: "Warm and cozy beanie for cold winter days."
+  },
+  {
+    id: 20,
+    name: "Sports Watch",
+    price: 49.99,
+    category: "unisex",
+    type: "accessory",
+    sizes: ["One Size"],
+    colors: ["black", "blue"],
+    images: ["https://img.freepik.com/free-photo/woman-taking-break-from-running_23-2148291437.jpg?t=st=1730372800~exp=1730376400~hmac=40207315f89ea28fec4ffcbbd31dbcf1e8c23808d0af90e0ef7b5bd15abd14ad&w=360"],
+    description: "Durable sports watch with multiple functionalities."
   }
 ];
