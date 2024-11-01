@@ -13,7 +13,6 @@ import { products } from '@/data/products';
 interface Filter {  
   productType: string[];  
   size: string[];  
-  color: string[];  
   priceRange: [number, number];  
 }  
 
@@ -29,11 +28,11 @@ interface Product {
   price: number;  
   type: string;  
   sizes: string[];  
-  colors: string[];  
 } 
 
 const FilterSidebar: React.FC = () => {  
-  const { filters, setFilter } = useFilterStore() as { filters: Filter; setFilter: (key: string, value:number[]) => void };  
+  const { filters, setFilter } = useFilterStore() as { filters: Filter; setFilter: (key: string, value: number[]) => void };  
+
   const getUniqueValues = (key) => {
     const valueMap = new Map();
     products.forEach((product) => {
@@ -47,7 +46,6 @@ const FilterSidebar: React.FC = () => {
 
   const productTypes = getUniqueValues('type');
   const allSizes = getUniqueValues('sizes');
-  const allColors = getUniqueValues('colors');
 
   const filterOptions = [
     {
@@ -59,11 +57,6 @@ const FilterSidebar: React.FC = () => {
       id: 'size',
       title: 'Size',
       options: allSizes,
-    },
-    {
-      id: 'color',
-      title: 'Color',
-      options: allColors,
     },
   ];
 
@@ -79,10 +72,8 @@ const FilterSidebar: React.FC = () => {
 
     let newFilters;
     if (normalizedCurrentFilters.includes(normalizedOption)) {
-      // Remove the option while preserving original casing of other items
       newFilters = currentFilters.filter((item) => item.toLowerCase() !== normalizedOption);
     } else {
-      // Add the option with original casing
       newFilters = [...currentFilters, option];
     }
 
@@ -94,39 +85,32 @@ const FilterSidebar: React.FC = () => {
     return currentFilters.some((filter) => filter.toLowerCase() === option.toLowerCase());
   };
 
-  // Updated capitalizeFirst function
   const capitalizeFirst = (str) => {
     if (!str) return '';
-    // Don't modify the casing for size values that might be numbers or specific formats
     if (['XS', 'S', 'M', 'L', 'XL', 'XXL'].includes(str.toUpperCase())) {
       return str.toUpperCase();
     }
-    // For numbers (sizes like "30", "32", etc.)
     if (!isNaN(str)) {
       return str;
     }
-    // For regular strings
     const words = str.split(' ');
     return words
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
       .join(' ');
   };
 
-  // Apply filters to products
   const filteredProducts = products.filter((product) => {
     const matchesProductType =
       filters.productType.length === 0 || filters.productType.includes(product.type);
     const matchesSize =
       filters.size.length === 0 || filters.size.some((size) => product.sizes.includes(size));
-    const matchesColor =
-      filters.color.length === 0 || filters.color.some((color) => product.colors.includes(color));
     const matchesPrice =
       product.price >= filters.priceRange[0] && product.price <= filters.priceRange[1];
 
-    return matchesProductType && matchesSize && matchesColor && matchesPrice;
+    return matchesProductType && matchesSize && matchesPrice;
   });
 
-  console.log(filteredProducts); // To see the filtered products
+  console.log(filteredProducts);
 
   return (
     <div className="w-64 p-4 border-r">
