@@ -21,10 +21,10 @@ const ProductCard = ({ product }) => {
     setShowAlert(true);
     setAlertType('warning');
   };
- 
+
   return (
     <div className="group relative bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
-      {/* Product Image and Quick Actions */}
+      {/* Product Image */}
       <div className="relative aspect-square">
         <img
           src={product.images[0] || '/path/to/fallback-image.jpg'}
@@ -32,8 +32,8 @@ const ProductCard = ({ product }) => {
           className="w-full h-full object-cover"
         />
 
-        {/* Quick Action Buttons - Appear on Hover */}
-        <div className="absolute inset-0 bg-black bg-opacity-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-4">
+        {/* Quick Action Buttons - Desktop (Hover) */}
+        <div className="absolute inset-0 bg-black bg-opacity-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 items-center justify-center gap-4 hidden md:flex">
           <button
             onClick={handleAddToCart}
             className="p-2 bg-white rounded-full hover:bg-gray-100 transition-colors"
@@ -49,6 +49,27 @@ const ProductCard = ({ product }) => {
           >
             <Heart className="w-5 h-5" />
           </button>
+        </div>
+
+        {/* Quick Action Buttons - Mobile (Always Visible) */}
+        <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/50 to-transparent md:hidden">
+          <div className="flex justify-end gap-2">
+            <button
+              onClick={handleAddToCart}
+              className="p-2 bg-white rounded-full shadow-md active:bg-gray-100"
+              aria-label="Add to cart"
+            >
+              <ShoppingCart className="w-5 h-5 text-gray-700" />
+            </button>
+
+            <button
+              onClick={handleAddToWishlist}
+              className="p-2 bg-white rounded-full shadow-md active:bg-gray-100"
+              aria-label="Add to wishlist"
+            >
+              <Heart className="w-5 h-5 text-gray-700" />
+            </button>
+          </div>
         </div>
       </div>
 
@@ -89,12 +110,12 @@ const ProductCard = ({ product }) => {
 
       {/* Alert Dialog */}
       {showAlert && (
-       <ToastAlert
-         product={product}
-         onClose={() => setShowAlert(false)}
-         type={alertType}
-       />
-     )}
+        <ToastAlert
+          product={product}
+          onClose={() => setShowAlert(false)}
+          type={alertType}
+        />
+      )}
     </div>
   );
 };

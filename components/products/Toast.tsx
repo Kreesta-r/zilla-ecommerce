@@ -11,7 +11,7 @@ const ToastAlert = ({ product, onClose, type = 'success' }) => {
 
   return (
     <div
-      className={`fixed bottom-4 left-1/2 transform -translate-x-1/2 px-4 py-2 rounded shadow-md z-50 ${
+      className={`fixed bottom-4 left-1/2 transform -translate-x-1/2 px-3 py-2 md:px-4 md:py-2 rounded-lg shadow-lg z-50 max-w-[90vw] md:max-w-md transition-all duration-200 ${
         type === 'success'
           ? 'bg-green-500 text-white'
           : type === 'warning' || type === 'size-warning'
@@ -23,7 +23,7 @@ const ToastAlert = ({ product, onClose, type = 'success' }) => {
         {type === 'success' && (
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6"
+            className="h-5 w-5 md:h-6 md:w-6 flex-shrink-0"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -38,7 +38,7 @@ const ToastAlert = ({ product, onClose, type = 'success' }) => {
         )}
         {type === 'warning' && (
           <svg
-            className="flex-shrink-0 inline w-4 h-4 me-3"
+            className="w-4 h-4 md:w-5 md:h-5 flex-shrink-0"
             aria-hidden="true"
             xmlns="http://www.w3.org/2000/svg"
             fill="currentColor"
@@ -49,7 +49,7 @@ const ToastAlert = ({ product, onClose, type = 'success' }) => {
         )}
         {type === 'size-warning' && (
           <svg
-            className="flex-shrink-0 inline w-4 h-4 me-3"
+            className="w-4 h-4 md:w-5 md:h-5 flex-shrink-0"
             aria-hidden="true"
             xmlns="http://www.w3.org/2000/svg"
             fill="currentColor"
@@ -61,7 +61,7 @@ const ToastAlert = ({ product, onClose, type = 'success' }) => {
         {type === 'error' && (
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6"
+            className="h-5 w-5 md:h-6 md:w-6 flex-shrink-0"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -74,7 +74,7 @@ const ToastAlert = ({ product, onClose, type = 'success' }) => {
             />
           </svg>
         )}
-        <p>
+        <p className="text-xs sm:text-sm md:text-base font-medium">
           {type === 'success'
             ? `Success! ${product.name} has been added to your cart.`
             : type === 'warning'
