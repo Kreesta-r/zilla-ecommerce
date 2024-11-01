@@ -2,9 +2,16 @@ import React, { useEffect, useState } from 'react';
 import ProductGrid from '@/components/products/ProductGrid';
 import { products } from '@/data/products';
 import { useRouter } from 'next/router';
-import { Layout, X } from 'lucide-react';
+import { Layout, X, Filter } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import RouteHeader from '@/components/products/RouteHeader';
 import FilterSidebar from '@/components/products/FilterSidebar';
 import useFilterStore from '@/store/filterStore';
@@ -17,9 +24,20 @@ const ProductsPage = () => {
   const { category } = router.query;
   const [selectedCategory, setSelectedCategory] = useState('All');
   const { filters, setFilter, clearFilters } = useFilterStore();
-  
-  const [sidebarVisible, setSidebarVisible] = useState(true);
   const [alert, setAlert] = useState('');
+  const [isDesktop, setIsDesktop] = useState(true);
+  const [sheetOpen, setSheetOpen] = useState(false);
+
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsDesktop(window.innerWidth >= 768); // 768px is our md breakpoint
+    };
+
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, []);
 
   useEffect(() => {
     if (category && typeof category === 'string') {
@@ -78,14 +96,13 @@ const ProductsPage = () => {
     <>
       <RouteHeader />
       {alert && (
-        <div className="fixed top-0 right-0 m-4 p-4 bg-green-500 text-white rounded shadow">
+        <div className="fixed top-0 right-0 m-4 p-4 bg-green-500 text-white rounded shadow z-50">
           {alert}
         </div>
       )}
-      <div className="flex flex-col md:flex-row max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {sidebarVisible && <FilterSidebar />}
-
-        <div className="w-full md:flex-1 md:pl-6">
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="flex flex-col">
           <div className="mb-8">
             <div className="flex items-center justify-between mb-6">
               <div>
@@ -94,22 +111,43 @@ const ProductsPage = () => {
                   {filteredProducts.length} products in {selectedCategory.toLowerCase()}
                 </p>
               </div>
-              <div className="flex items-center gap-4">
-                <button
-                  className="flex items-center gap-2 px-4 py-2 text-sm text-gray-600 hover:text-gray-900"
-                  onClick={() => setSidebarVisible(!sidebarVisible)}
-                >
-                  <Layout className="w-4 h-4" />
-                  <span>{sidebarVisible ? 'Hide' : 'View'}</span>
-                </button>
-              </div>
+              
+              {/* Mobile Filter Button */}
+              {!isDesktop && (
+                <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
+                  <SheetTrigger asChild>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="flex items-center gap-2"
+                    >
+                      <Filter className="h-4 w-4" />
+                      Filters
+                      {getActiveFiltersCount() > 0 && (
+                        <Badge 
+                          variant="secondary" 
+                          className="ml-1"
+                        >
+                          {getActiveFiltersCount()}
+                        </Badge>
+                      )}
+                    </Button>
+                  </SheetTrigger>
+                  <SheetContent side="left" className="w-[70%] sm:w-[380px] p-0">
+                    <SheetHeader className="px-6 py-4 border-b">
+                      <SheetTitle>Filters</SheetTitle>
+                    </SheetHeader>
+                    <FilterSidebar onClose={() => setSheetOpen(false)} />
+                  </SheetContent>
+                </Sheet>
+              )}
             </div>
 
-            <nav className="flex items-center justify-start border-b border-gray-200">
+            <nav className="flex items-center justify-start overflow-x-auto overflow-y-hidden border-b border-gray-200">
               {categories.map(cat => (
                 <button
                   key={cat}
-                  className={`relative px-4 py-4 text-sm font-medium -mb-px ${
+                  className={`relative px-4 py-4 text-sm font-medium whitespace-nowrap -mb-px ${
                     selectedCategory === cat 
                       ? 'text-black border-b-2 border-black' 
                       : 'text-gray-500 hover:text-gray-700 hover:border-gray-300 border-b-2 border-transparent'
@@ -131,85 +169,98 @@ const ProductsPage = () => {
             </nav>
           </div>
 
-          {(selectedCategory !== 'All' || getActiveFiltersCount() > 0) && (
-            <div className="mb-6">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-gray-500">Active filters:</span>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={resetAllFilters}
-                  className="text-gray-500 hover:text-gray-700"
-                >
-                  Clear all
-                </Button>
+          <div className="flex flex-col md:flex-row gap-8">
+            {/* Desktop Sidebar */}
+            {isDesktop && (
+              <div className="w-full md:w-64 flex-shrink-0">
+                <FilterSidebar />
               </div>
-              <div className="flex flex-wrap gap-2">
-                {selectedCategory !== 'All' && (
-                  <Badge
-                    variant="secondary"
-                    className="flex items-center gap-1"
-                  >
-                    Category: {selectedCategory}
-                    <X
-                      className="h-3 w-3 cursor-pointer"
-                      onClick={() => {
-                        setSelectedCategory('All');
-                        router.push('/products');
-                      }}
-                    />
-                  </Badge>
-                )}
-                {Object.entries(filters).map(([key, value]) => {
-                  if (key === 'priceRange') {
-                    if (value[0] > 0 || value[1] < 1000) {
-                      return (
+            )}
+
+            <div className="flex-1">
+              {/* Active Filters */}
+              {(selectedCategory !== 'All' || getActiveFiltersCount() > 0) && (
+                <div className="mb-6">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm text-gray-500">Active filters:</span>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={resetAllFilters}
+                      className="text-gray-500 hover:text-gray-700"
+                    >
+                      Clear all
+                    </Button>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedCategory !== 'All' && (
+                      <Badge
+                        variant="secondary"
+                        className="flex items-center gap-1"
+                      >
+                        Category: {selectedCategory}
+                        <X
+                          className="h-3 w-3 cursor-pointer"
+                          onClick={() => {
+                            setSelectedCategory('All');
+                            router.push('/products');
+                          }}
+                        />
+                      </Badge>
+                    )}
+                    {Object.entries(filters).map(([key, value]) => {
+                      if (key === 'priceRange') {
+                        if (value[0] > 0 || value[1] < 1000) {
+                          return (
+                            <Badge
+                              key="price"
+                              variant="secondary"
+                              className="flex items-center gap-1"
+                            >
+                              Price: ${value[0]} - ${value[1]}
+                              <X
+                                className="h-3 w-3 cursor-pointer"
+                                onClick={() => setFilter('priceRange', [0, 1000])}
+                              />
+                            </Badge>
+                          );
+                        }
+                        return null;
+                      }
+                      return Array.isArray(value) && value.map(item => (
                         <Badge
-                          key="price"
+                          key={`${key}-${item}`}
                           variant="secondary"
                           className="flex items-center gap-1"
                         >
-                          Price: ${value[0]} - ${value[1]}
+                          {key}: {item}
                           <X
                             className="h-3 w-3 cursor-pointer"
-                            onClick={() => setFilter('priceRange', [0, 1000])}
+                            onClick={() => removeFilter(key, item)}
                           />
                         </Badge>
-                      );
-                    }
-                    return null;
-                  }
-                  return Array.isArray(value) && value.map(item => (
-                    <Badge
-                      key={`${key}-${item}`}
-                      variant="secondary"
-                      className="flex items-center gap-1"
-                    >
-                      {key}: {item}
-                      <X
-                        className="h-3 w-3 cursor-pointer"
-                        onClick={() => removeFilter(key, item)}
-                      />
-                    </Badge>
-                  ));
-                })}
-              </div>
-            </div>
-          )}
+                      ));
+                    })}
+                  </div>
+                </div>
+              )}
 
-          {filteredProducts.length === 0 ? (
-            <div className="text-center py-16">
-              <h3 className="mt-2 text-sm font-medium text-gray-900">No products found</h3>
-              <p className="mt-1 text-sm text-gray-500">
-                Try changing your filters or check back later.
-              </p>
+              {/* Products Grid */}
+              {filteredProducts.length === 0 ? (
+                <div className="text-center py-16">
+                  <h3 className="mt-2 text-sm font-medium text-gray-900">No products found</h3>
+                  <p className="mt-1 text-sm text-gray-500">
+                    Try changing your filters or check back later.
+                  </p>
+                </div>
+              ) : (
+                <ProductGrid products={filteredProducts} onAddToCart={handleAddToCart} />
+              )}
             </div>
-          ) : (
-            <ProductGrid products={filteredProducts} onAddToCart={handleAddToCart} />
-          )}
+          </div>
         </div>
       </div>
-      <Footer/>
+      <Footer />
     </>
   );
 };

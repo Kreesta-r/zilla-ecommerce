@@ -7,38 +7,23 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
+import { Button } from '@/components/ui/button';
 import useFilterStore from '@/store/filterStore';
 import { products } from '@/data/products';
 
-interface Filter {  
-  productType: string[];  
-  size: string[];  
-  priceRange: [number, number];  
-}  
+interface FilterSidebarProps {
+  onClose?: () => void;
+}
 
-interface FilterOption {  
-  id: string;  
-  title: string;  
-  options: string[];  
-}  
-  
-interface Product {  
-  id: number;  
-  name: string;  
-  price: number;  
-  type: string;  
-  sizes: string[];  
-} 
+const FilterSidebar: React.FC<FilterSidebarProps> = ({ onClose }) => {
+  const { filters, setFilter } = useFilterStore();
 
-const FilterSidebar: React.FC = () => {  
-  const { filters, setFilter } = useFilterStore() as { filters: Filter; setFilter: (key: string, value: number[]) => void };  
-
-  const getUniqueValues = (key) => {
+  const getUniqueValues = (key: string) => {
     const valueMap = new Map();
     products.forEach((product) => {
       const values = Array.isArray(product[key]) ? product[key] : [product[key]];
       values.forEach((value) => {
-        valueMap.set(value.toLowerCase(), value); 
+        if (value) valueMap.set(value.toLowerCase(), value);
       });
     });
     return Array.from(valueMap.values()).sort();
@@ -65,7 +50,7 @@ const FilterSidebar: React.FC = () => {
   const minPrice = Math.floor(Math.min(...prices));
   const maxPrice = Math.ceil(Math.max(...prices));
 
-  const handleCheckboxChange = (categoryId, option) => {
+  const handleCheckboxChange = (categoryId: string, option: string) => {
     const currentFilters = filters[categoryId] || [];
     const normalizedCurrentFilters = currentFilters.map((f) => f.toLowerCase());
     const normalizedOption = option.toLowerCase();
@@ -80,17 +65,17 @@ const FilterSidebar: React.FC = () => {
     setFilter(categoryId, newFilters);
   };
 
-  const isChecked = (categoryId, option) => {
+  const isChecked = (categoryId: string, option: string) => {
     const currentFilters = filters[categoryId] || [];
     return currentFilters.some((filter) => filter.toLowerCase() === option.toLowerCase());
   };
 
-  const capitalizeFirst = (str) => {
+  const capitalizeFirst = (str: string) => {
     if (!str) return '';
     if (['XS', 'S', 'M', 'L', 'XL', 'XXL'].includes(str.toUpperCase())) {
       return str.toUpperCase();
     }
-    if (!isNaN(str)) {
+    if (!isNaN(Number(str))) {
       return str;
     }
     const words = str.split(' ');
@@ -99,72 +84,82 @@ const FilterSidebar: React.FC = () => {
       .join(' ');
   };
 
-  const filteredProducts = products.filter((product) => {
-    const matchesProductType =
-      filters.productType.length === 0 || filters.productType.includes(product.type);
-    const matchesSize =
-      filters.size.length === 0 || filters.size.some((size) => product.sizes.includes(size));
-    const matchesPrice =
-      product.price >= filters.priceRange[0] && product.price <= filters.priceRange[1];
-
-    return matchesProductType && matchesSize && matchesPrice;
-  });
-
-  console.log(filteredProducts);
-
   return (
-    <div className="w-64 p-4 border-r">
-      <h2 className="text-xl font-semibold mb-4">Filters</h2>
+    <div className="h-full overflow-y-auto">
+      <div className="p-4 md:p-6">
+        <div className="space-y-6">
+          {/* Price Range Slider */}
+          <div>
+            <h3 className="font-medium mb-4 text-sm md:text-base">Price Range</h3>
+            <Slider
+              defaultValue={[minPrice, maxPrice]}
+              value={filters.priceRange || [minPrice, maxPrice]}
+              min={minPrice}
+              max={maxPrice}
+              step={1}
+              onValueChange={(value) => setFilter('priceRange', value)}
+              className="w-full"
+            />
+            <div className="flex justify-between mt-3 text-sm text-gray-600">
+              <span>${filters.priceRange?.[0] || minPrice}</span>
+              <span>${filters.priceRange?.[1] || maxPrice}</span>
+            </div>
+          </div>
 
-      {/* Price Range Slider */}
-      <div className="mb-6">
-        <h3 className="font-medium mb-2">Price Range</h3>
-        <Slider
-          defaultValue={[minPrice, maxPrice]}
-          value={filters.priceRange || [minPrice, maxPrice]}
-          min={minPrice}
-          max={maxPrice}
-          step={1}
-          onValueChange={(value) => setFilter('priceRange', value)}
-          className="w-full"
-        />
-        <div className="flex justify-between mt-2 text-sm">
-          <span>${filters.priceRange?.[0] || minPrice}</span>
-          <span>${filters.priceRange?.[1] || maxPrice}</span>
+          {/* Filter Options Accordion */}
+          <Accordion 
+            type="single" 
+            collapsible 
+            className="w-full space-y-4"
+          >
+            {filterOptions.map((optionGroup) => (
+              <AccordionItem
+                key={optionGroup.id}
+                value={optionGroup.id}
+                className="border-b border-gray-200 last:border-0"
+              >
+                <AccordionTrigger className="text-sm md:text-base font-medium py-3">
+                  {optionGroup.title}
+                </AccordionTrigger>
+                <AccordionContent>
+                  <div className="space-y-3 py-2">
+                    {optionGroup.options.map((option) => (
+                      <div key={option} className="flex items-center space-x-3">
+                        <Checkbox
+                          id={`${optionGroup.id}-${option}`}
+                          checked={isChecked(optionGroup.id, option)}
+                          onCheckedChange={() => handleCheckboxChange(optionGroup.id, option)}
+                          className="h-4 w-4"
+                          />
+                          <label
+                            htmlFor={`${optionGroup.id}-${option}`}
+                            className="text-sm md:text-base text-gray-700 cursor-pointer"
+                          >
+                            {capitalizeFirst(option)}
+                          </label>
+                        </div>
+                      ))}
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+  
+            {/* Mobile Apply Button */}
+            {onClose && (
+              <div className="mt-8 border-t pt-6">
+                <Button 
+                  className="w-full" 
+                  onClick={onClose}
+                >
+                  Apply Filters
+                </Button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
-
-      {/* Filter Options Accordion */}
-      <Accordion type="single" collapsible className="w-full">
-        {filterOptions.map((optionGroup) => (
-          <AccordionItem key={optionGroup.id} value={optionGroup.id}>
-            <AccordionTrigger className="text-sm font-medium">
-              {optionGroup.title}
-            </AccordionTrigger>
-            <AccordionContent>
-              <div className="space-y-2">
-                {optionGroup.options.map((option) => (
-                  <div key={option} className="flex items-center space-x-2">
-                    <Checkbox
-                      id={`${optionGroup.id}-${option}`}
-                      checked={isChecked(optionGroup.id, option)}
-                      onCheckedChange={() => handleCheckboxChange(optionGroup.id, option)}
-                    />
-                    <label
-                      htmlFor={`${optionGroup.id}-${option}`}
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                    >
-                      {capitalizeFirst(option)}
-                    </label>
-                  </div>
-                ))}
-              </div>
-            </AccordionContent>
-          </AccordionItem>
-        ))}
-      </Accordion>
-    </div>
-  );
-};
-
-export default FilterSidebar;
+    );
+  };
+  
+  export default FilterSidebar;
